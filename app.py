@@ -39,7 +39,7 @@ st.markdown("""
 if not st.session_state.started:
     st.markdown("""
     <div class="hero">
-        <h1>🧬 AURA Health</h1>
+        <h1>🧬 Naseem Health App </h1>
         <p>AI-Inspired Global Medical Assistant</p>
         <br>
     </div>
