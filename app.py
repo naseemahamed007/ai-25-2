@@ -4,221 +4,234 @@ import plotly.express as px
 from datetime import datetime
 import time
 
-# ---------------- PAGE CONFIG ----------------
+# ──────────────────────────────────────────────
+# PAGE CONFIG
+# ──────────────────────────────────────────────
 st.set_page_config(
-    page_title="Naseem Health App",
+    page_title="Naseem Health OS",
     page_icon="🍏",
     layout="wide",
-    initial_sidebar_state="collapsed"
 )
 
-# ---------------- APPLE STYLE CSS ----------------
-st.markdown("""
+# ──────────────────────────────────────────────
+# THEME ENGINE (Light / Dark)
+# ──────────────────────────────────────────────
+if "theme" not in st.session_state:
+    st.session_state.theme = "light"
+
+def toggle_theme():
+    st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
+
+LIGHT = """
 <style>
-/* MAIN BACKGROUND */
-.stApp {
-    background: linear-gradient(145deg, #f8f8fa, #ffffff);
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+body {
+    background: #f5f7fa !important;
 }
-
-/* HEADER */
-.hero {
-    text-align:center;
-    padding:90px 20px 30px 20px;
+header {visibility: hidden;}
+section.main > div {padding-top: 1rem;}
+.block {
+    background: rgba(255,255,255,0.65);
+    backdrop-filter: blur(25px);
+    border-radius: 25px;
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
 }
-.hero h1 {
-    font-size:64px;
-    font-weight:800;
-    margin-bottom:10px;
-    color:#000;
+.bigtitle {
+    font-size: 42px; font-weight: 800;
+    color: #000;
 }
-.hero p {
-    font-size:20px;
-    color:#555;
+.subtitle {
+    font-size:18px; color:#333;
 }
-
-/* APPLE CARD DESIGN */
-.card {
-    background: rgba(255,255,255,0.55);
-    backdrop-filter: blur(20px);
-    border-radius:25px;
-    padding:28px;
-    box-shadow:0 6px 25px rgba(0,0,0,0.08);
-    margin-bottom:20px;
-    transition: all 0.3s ease;
-}
-.card:hover {
-    transform: translateY(-4px);
-    box-shadow:0 12px 35px rgba(0,0,0,0.12);
-}
-
-/* SECTION HEADING */
-.section {
-    font-size:34px;
-    font-weight:700;
-    margin-bottom:25px;
-    color:#111;
-}
-
 </style>
-""", unsafe_allow_html=True)
+"""
 
-# ---------------- SESSION ----------------
-if "started" not in st.session_state:
-    st.session_state.started = False
+DARK = """
+<style>
+body {
+    background: radial-gradient(circle at top, #121212, #000000) !important;
+}
+header {visibility: hidden;}
+section.main > div {padding-top: 1rem;}
+.block {
+    background: rgba(20,20,20,0.55);
+    backdrop-filter: blur(25px);
+    border-radius: 25px;
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.45);
+    margin-bottom: 25px;
+}
+.bigtitle {
+    font-size: 42px; font-weight: 800;
+    color: #fff;
+}
+.subtitle {
+    font-size:18px; color:#ccc;
+}
+</style>
+"""
 
-# ---------------- LANDING PAGE ----------------
-if not st.session_state.started:
-    st.markdown("""
-    <div class="hero">
-        <h1>🍏 Naseem Health App</h1>
-        <p>Your All-in-One AI Powered Health Ecosystem</p>
-    </div>
-    """, unsafe_allow_html=True)
+if st.session_state.theme == "light":
+    st.markdown(LIGHT, unsafe_allow_html=True)
+else:
+    st.markdown(DARK, unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns([1,2,1])
-    with col2:
-        if st.button("Enter Dashboard", use_container_width=True):
-            st.session_state.started = True
-            st.rerun()
-    st.stop()
+# ──────────────────────────────────────────────
+# SIDEBAR (Navigation)
+# ──────────────────────────────────────────────
+with st.sidebar:
+    st.title("🍏 Naseem Health OS")
+    choice = st.radio("Navigate", [
+        "🏠 Dashboard",
+        "📊 Vitals",
+        "🩺 Symptoms",
+        "🧬 Diabetes",
+        "❤️ Heart",
+        "📈 Trends",
+        "🤖 AI Doctor",
+        "🎤 Voice Assistant",
+        "⚙️ Settings"
+    ])
 
-# ---------------- SIDEBAR ----------------
-st.sidebar.title("🍏 Naseem Health App")
-menu = st.sidebar.radio(
-    "Navigate",
-    ["Dashboard", "Vitals", "Symptoms", "Diabetes", "Heart", "Trends", "AI (Coming Soon)", "Reports (Coming Soon)"]
-)
+# ──────────────────────────────────────────────
+# DASHBOARD
+# ──────────────────────────────────────────────
+if choice == "🏠 Dashboard":
+    st.markdown("<div class='bigtitle'>Welcome to Naseem Health OS</div>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle'>Your personal AI-powered health ecosystem.</div><br>", unsafe_allow_html=True)
 
-# ----------------------------------------------------
-# ---------------- DASHBOARD PAGE --------------------
-# ----------------------------------------------------
-if menu == "Dashboard":
-    st.markdown("<div class='section'>Overall Health Summary</div>", unsafe_allow_html=True)
+    cols = st.columns(3)
+    metrics = [
+        ("BMI", "24.6", "🧍"),
+        ("Blood Pressure", "118/78", "🩸"),
+        ("Health Score", "84%", "❤️")
+    ]
+    for col, (label, value, icon) in zip(cols, metrics):
+        with col:
+            st.markdown(f"""
+                <div class='block'>
+                    <h3>{icon} {label}</h3>
+                    <h1>{value}</h1>
+                    <p style='opacity:0.7;'>Updated Now</p>
+                </div>
+            """, unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.markdown("""<div class='card'>
-        <h3>🧍 BMI</h3>
-        <h1>24.6</h1>
-        <p>Normal</p>
-        </div>""", unsafe_allow_html=True)
-    with col2:
-        st.markdown("""<div class='card'>
-        <h3>🩸 Blood Pressure</h3>
-        <h1>118/78</h1>
-        <p>Optimal</p>
-        </div>""", unsafe_allow_html=True)
-    with col3:
-        st.markdown("""<div class='card'>
-        <h3>❤️ Health Score</h3>
-        <h1>84%</h1>
-        <p>Good</p>
-        </div>""", unsafe_allow_html=True)
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    st.write("Health Score Loading…")
-    progress = st.progress(0)
-    for i in range(101):
-        progress.progress(i)
+    st.markdown("<br><div class='bigtitle'>Health Score Progress</div>", unsafe_allow_html=True)
+    bar = st.progress(0)
+    for i in range(100):
         time.sleep(0.01)
-    st.success("Health Score Calculated")
+        bar.progress(i+1)
 
-# ----------------------------------------------------
-# ---------------- VITALS PAGE -----------------------
-# ----------------------------------------------------
-elif menu == "Vitals":
-    st.markdown("<div class='section'>Vitals Analyzer</div>", unsafe_allow_html=True)
+# ──────────────────────────────────────────────
+# VITALS
+# ──────────────────────────────────────────────
+elif choice == "📊 Vitals":
+    st.markdown("<div class='bigtitle'>Vitals Analyzer</div>", unsafe_allow_html=True)
+    st.markdown("<div class='block'>", unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
+    c1, c2 = st.columns(2)
+    h = c1.number_input("Height (cm)", 100, 250)
+    w = c1.number_input("Weight (kg)", 30, 200)
+    sys = c2.number_input("Systolic BP", 80, 250)
+    dia = c2.number_input("Diastolic BP", 40, 150)
 
-    with st.container():
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-
-        height = col1.number_input("Height (cm)", 100, 220)
-        weight = col1.number_input("Weight (kg)", 30, 200)
-        sys = col2.number_input("Systolic BP", 80, 250)
-        dia = col2.number_input("Diastolic BP", 40, 150)
-
-        if st.button("Analyze Vitals"):
-            bmi = round(weight / ((height/100)**2), 2)
-            st.success(f"BMI: {bmi}")
-            st.progress(min(int(bmi*4),100))
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-# ----------------------------------------------------
-# ---------------- SYMPTOM ANALYZER ------------------
-# ----------------------------------------------------
-elif menu == "Symptoms":
-    st.markdown("<div class='section'>AI Symptom Checker</div>", unsafe_allow_html=True)
-
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-
-    symptoms = st.multiselect(
-        "Select symptoms",
-        ["Fever","Cough","Chest Pain","Fatigue","Frequent Urination"]
-    )
-
-    if st.button("Check"):
-        if "Chest Pain" in symptoms:
-            st.error("⚠️ Potential cardiac issue detected.")
-        elif "Frequent Urination" in symptoms:
-            st.warning("⚠️ Possible diabetes risk.")
-        else:
-            st.success("No major risk detected.")
+    if st.button("Analyze"):
+        bmi = round(w / ((h/100)**2), 2)
+        st.success(f"BMI: {bmi}")
+        st.progress(min(int(bmi * 4), 100))
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-# ----------------------------------------------------
-# ---------------- DIABETES PAGE ---------------------
-# ----------------------------------------------------
-elif menu == "Diabetes":
-    st.markdown("<div class='section'>Diabetes Risk</div>", unsafe_allow_html=True)
+# ──────────────────────────────────────────────
+# SYMPTOMS
+# ──────────────────────────────────────────────
+elif choice == "🩺 Symptoms":
+    st.markdown("<div class='bigtitle'>Symptom Intelligence</div>", unsafe_allow_html=True)
+    st.markdown("<div class='block'>", unsafe_allow_html=True)
 
-    sugar = st.number_input("Fasting Sugar (mg/dL)", 60, 300)
+    sy = st.multiselect("Select Symptoms", ["Fever","Cough","Chest Pain","Fatigue","Frequent Urination"])
 
-    if st.button("Analyze Sugar"):
+    if st.button("Analyze Symptoms"):
+        if "Chest Pain" in sy:
+            st.error("⚠ Possible Cardiac Risk")
+        elif "Frequent Urination" in sy:
+            st.warning("⚠ Possible Diabetes Indicator")
+        else:
+            st.success("No immediate high-risk symptoms.")
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# ──────────────────────────────────────────────
+# DIABETES
+# ──────────────────────────────────────────────
+elif choice == "🧬 Diabetes":
+    st.markdown("<div class='bigtitle'>Diabetes Risk Analyzer</div>", unsafe_allow_html=True)
+    sugar = st.number_input("Fasting Sugar Level (mg/dL)", 60, 300)
+
+    if st.button("Check"):
         if sugar >= 126:
-            st.error("High Diabetes Risk")
+            st.error("High risk of diabetes")
         elif sugar >= 100:
-            st.warning("Pre-diabetic Stage")
+            st.warning("Pre-diabetic range")
         else:
-            st.success("Normal Sugar Level")
+            st.success("Normal sugar level")
 
-# ----------------------------------------------------
-# ---------------- HEART PAGE ------------------------
-# ----------------------------------------------------
-elif menu == "Heart":
-    st.markdown("<div class='section'>Heart Risk Assessment</div>", unsafe_allow_html=True)
+# ──────────────────────────────────────────────
+# HEART
+# ──────────────────────────────────────────────
+elif choice == "❤️ Heart":
+    st.markdown("<div class='bigtitle'>Heart Health</div>", unsafe_allow_html=True)
+    c = st.number_input("Cholesterol Level", 100, 400)
+    s = st.selectbox("Do you smoke?", ["No", "Yes"])
 
-    chol = st.number_input("Cholesterol", 100, 400)
-    smoke = st.selectbox("Do you smoke?", ["No","Yes"])
-
-    if st.button("Assess Risk"):
-        if chol > 240 or smoke == "Yes":
-            st.error("⚠️ High Heart Risk")
+    if st.button("Assess"):
+        if c > 240 or s == "Yes":
+            st.error("High heart risk")
         else:
-            st.success("Low Heart Risk")
+            st.success("Healthy heart condition")
 
-# ----------------------------------------------------
-# ---------------- TRENDS PAGE -----------------------
-# ----------------------------------------------------
-elif menu == "Trends":
-    st.markdown("<div class='section'>Health Trends</div>", unsafe_allow_html=True)
+# ──────────────────────────────────────────────
+# TRENDS
+# ──────────────────────────────────────────────
+elif choice == "📈 Trends":
+    st.markdown("<div class='bigtitle'>Trends & Analytics</div>", unsafe_allow_html=True)
 
     df = pd.DataFrame({
         "Date": pd.date_range(end=datetime.today(), periods=10),
-        "BMI":[24,24.2,24.4,24.6,24.7,24.8,25,24.9,24.8,24.7]
+        "BMI": [24, 24.2, 24.3, 24.5, 24.6, 24.8, 25, 24.9, 24.7, 24.6]
     })
 
-    fig = px.line(df, x="Date", y="BMI", markers=True, title="BMI Trend Over Time")
+    fig = px.line(df, x="Date", y="BMI", markers=True)
     st.plotly_chart(fig, use_container_width=True)
 
-# ---------------- Coming Soon ----------------
-elif menu == "AI (Coming Soon)":
-    st.info("AI Symptom Intelligence, Voice Assistant & Prediction Engine Coming 🔥")
+# ──────────────────────────────────────────────
+# AI DOCTOR (ENABLED STRUCTURE)
+# ──────────────────────────────────────────────
+elif choice == "🤖 AI Doctor":
+    st.markdown("<div class='bigtitle'>AI Doctor</div>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle'>AI reasoning will be added here once API key is provided.</div>", unsafe_allow_html=True)
 
-elif menu == "Reports (Coming Soon)":
-    st.info("PDF Health Report Generator Coming Soon.")
+    user_input = st.text_area("Describe your issue")
+    if st.button("Ask AI"):
+        st.info("⚠ AI engine will be activated when you plug your API key.")
+
+# ──────────────────────────────────────────────
+# VOICE ASSISTANT (STRUCTURE READY)
+# ──────────────────────────────────────────────
+elif choice == "🎤 Voice Assistant":
+    st.markdown("<div class='bigtitle'>Voice Assistant</div>", unsafe_allow_html=True)
+    st.write("Voice input/output engine will activate once TTS/STT API is connected.")
+
+# ──────────────────────────────────────────────
+# SETTINGS
+# ──────────────────────────────────────────────
+elif choice == "⚙️ Settings":
+    st.markdown("<div class='bigtitle'>Settings</div>", unsafe_allow_html=True)
+
+    st.write("### Theme")
+    st.button("Toggle Light/Dark", on_click=toggle_theme)
+
+    st.write("### Version")
+    st.write("Naseem Health OS — Billion Dollar Edition 1.0.0")
+
