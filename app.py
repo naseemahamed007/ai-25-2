@@ -252,3 +252,11 @@ elif choice == "⚙️ Settings":
     st.write("### Version")
     st.write("Naseem Health OS — Billion Dollar Edition 1.0.0")
 
+if menu == "AI Doctor":
+    st.markdown("### 🤖 AI Health Assistant")
+    user_input = st.text_area("Describe your symptoms or ask anything:")
+
+    if st.button("Ask AI"):
+        with st.spinner("AI is thinking..."):
+            result = ai_doctor(user_input)
+            st.write(result)
