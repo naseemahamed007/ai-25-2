@@ -41,7 +41,7 @@ if not st.session_state.logged:
     if st.button("Login"):
         if user != "" and pwd != "":
             st.session_state.logged = True
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.error("Enter credentials")
     st.stop()
