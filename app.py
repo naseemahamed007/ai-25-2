@@ -35,15 +35,16 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ================= LANDING PAGE =================
+# ================= LANDING PAGE (NIL START) =================
 if not st.session_state.started:
-    st.video("assets/hero.mp4", start_time=0)
     st.markdown("""
     <div class="hero">
         <h1>🧬 AURA Health</h1>
         <p>AI-Inspired Global Medical Assistant</p>
+        <br>
     </div>
     """, unsafe_allow_html=True)
+
     col1, col2, col3 = st.columns([1,2,1])
     with col2:
         if st.button("🚀 Enter Health Dashboard", use_container_width=True):
