@@ -3,4 +3,16 @@ pandas
 plotly
 numpy
 python-dateutil
+openai
+gTTS
+SpeechRecognition
+pydub
+Pillow
+requests
+streamlit-extras
+streamlit-lottie
+streamlit-option-menu
+scikit-learn
+tensorflow
+torch
 
