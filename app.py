@@ -32,7 +32,7 @@ if "logged" not in st.session_state:
 
 # ---------------- LOGIN ----------------
 if not st.session_state.logged:
-    st.markdown("<div class='big'>🩺 Global Medical Assistant</div>", unsafe_allow_html=True)
+    st.markdown("<div class='big'>🩺 Naseem Medical Assistant</div>", unsafe_allow_html=True)
     st.write("Login to continue")
 
     user = st.text_input("Username")
