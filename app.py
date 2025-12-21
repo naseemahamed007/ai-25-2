@@ -3,14 +3,12 @@ import pandas as pd
 import plotly.express as px
 from datetime import datetime
 import time
-
-# ================= SAFE AI SETUP =================
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 
-# ---- Hugging Face Model ----
-model_name = "bigscience/bloom-560m"
-token = st.secrets["huggingface"]["api_key"]  # Add your HF API key in Streamlit secrets
+# ================= SAFE AI SETUP =================
+model_name = "bigscience/bloom-560m"  # smaller model for free tier
+token = st.secrets["huggingface"]["api_key"]
 
 @st.cache_resource
 def load_model():
@@ -30,13 +28,9 @@ def ai_doctor(prompt):
         return f"⚠️ Error: {str(e)}"
 
 # ================= PAGE CONFIG =================
-st.set_page_config(
-    page_title="Naseem Health OS",
-    page_icon="🍏",
-    layout="wide"
-)
+st.set_page_config(page_title="Naseem Health OS", page_icon="🍏", layout="wide")
 
-# ================= THEME ENGINE =================
+# ================= THEME =================
 if "theme" not in st.session_state:
     st.session_state.theme = "light"
 
@@ -67,34 +61,24 @@ border-radius: 25px;padding: 30px;box-shadow: 0 10px 40px rgba(0,0,0,0.45);margi
 </style>
 """
 
-if st.session_state.theme == "light":
-    st.markdown(LIGHT, unsafe_allow_html=True)
-else:
-    st.markdown(DARK, unsafe_allow_html=True)
+st.markdown(LIGHT if st.session_state.theme=="light" else DARK, unsafe_allow_html=True)
 
 # ================= SIDEBAR =================
 with st.sidebar:
     st.title("🍏 Naseem Health OS")
     menu = st.radio("Navigate", [
-        "🏠 Dashboard",
-        "📊 Vitals",
-        "🩺 Symptoms",
-        "🧬 Diabetes",
-        "❤️ Heart",
-        "📈 Trends",
-        "🤖 AI Doctor",
-        "🎤 Voice Assistant",
-        "⚙️ Settings"
+        "🏠 Dashboard","📊 Vitals","🩺 Symptoms","🧬 Diabetes","❤️ Heart",
+        "📈 Trends","🤖 AI Doctor","🎤 Voice Assistant","⚙️ Settings"
     ])
 
 # ================= DASHBOARD =================
-if menu == "🏠 Dashboard":
+if menu=="🏠 Dashboard":
     st.markdown("<div class='bigtitle'>Welcome to Naseem Health OS</div>", unsafe_allow_html=True)
     st.markdown("<div class='subtitle'>Your personal AI-powered health ecosystem.</div><br>", unsafe_allow_html=True)
 
     cols = st.columns(3)
-    metrics = [("BMI", "24.6", "🧍"), ("Blood Pressure", "118/78", "🩸"), ("Health Score", "84%", "❤️")]
-    for col, (label, value, icon) in zip(cols, metrics):
+    metrics = [("BMI","24.6","🧍"),("Blood Pressure","118/78","🩸"),("Health Score","84%","❤️")]
+    for col, (label,value,icon) in zip(cols, metrics):
         with col:
             st.markdown(f"<div class='block'><h3>{icon} {label}</h3><h1>{value}</h1><p style='opacity:0.7;'>Updated Now</p></div>", unsafe_allow_html=True)
 
@@ -105,23 +89,22 @@ if menu == "🏠 Dashboard":
         bar.progress(i+1)
 
 # ================= VITALS =================
-elif menu == "📊 Vitals":
+elif menu=="📊 Vitals":
     st.markdown("<div class='bigtitle'>Vitals Analyzer</div>", unsafe_allow_html=True)
     st.markdown("<div class='block'>", unsafe_allow_html=True)
-    c1, c2 = st.columns(2)
-    h = c1.number_input("Height (cm)", 100, 250)
-    w = c1.number_input("Weight (kg)", 30, 200)
-    sys = c2.number_input("Systolic BP", 80, 250)
-    dia = c2.number_input("Diastolic BP", 40, 150)
-
+    c1,c2 = st.columns(2)
+    h = c1.number_input("Height (cm)",100,250)
+    w = c1.number_input("Weight (kg)",30,200)
+    sys = c2.number_input("Systolic BP",80,250)
+    dia = c2.number_input("Diastolic BP",40,150)
     if st.button("Analyze"):
-        bmi = round(w / ((h/100)**2), 2)
+        bmi = round(w/((h/100)**2),2)
         st.success(f"BMI: {bmi}")
-        st.progress(min(int(bmi*4), 100))
+        st.progress(min(int(bmi*4),100))
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ================= SYMPTOMS =================
-elif menu == "🩺 Symptoms":
+elif menu=="🩺 Symptoms":
     st.markdown("<div class='bigtitle'>Symptom Intelligence</div>", unsafe_allow_html=True)
     st.markdown("<div class='block'>", unsafe_allow_html=True)
     sy = st.multiselect("Select Symptoms", ["Fever","Cough","Chest Pain","Fatigue","Frequent Urination"])
@@ -135,40 +118,33 @@ elif menu == "🩺 Symptoms":
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ================= DIABETES =================
-elif menu == "🧬 Diabetes":
+elif menu=="🧬 Diabetes":
     st.markdown("<div class='bigtitle'>Diabetes Risk Analyzer</div>", unsafe_allow_html=True)
-    sugar = st.number_input("Fasting Sugar Level (mg/dL)", 60, 300)
+    sugar = st.number_input("Fasting Sugar Level (mg/dL)",60,300)
     if st.button("Check"):
-        if sugar >= 126:
-            st.error("High risk of diabetes")
-        elif sugar >= 100:
-            st.warning("Pre-diabetic range")
-        else:
-            st.success("Normal sugar level")
+        if sugar>=126: st.error("High risk of diabetes")
+        elif sugar>=100: st.warning("Pre-diabetic range")
+        else: st.success("Normal sugar level")
 
 # ================= HEART =================
-elif menu == "❤️ Heart":
+elif menu=="❤️ Heart":
     st.markdown("<div class='bigtitle'>Heart Health</div>", unsafe_allow_html=True)
-    c = st.number_input("Cholesterol Level", 100, 400)
-    s = st.selectbox("Do you smoke?", ["No", "Yes"])
+    c = st.number_input("Cholesterol Level",100,400)
+    s = st.selectbox("Do you smoke?",["No","Yes"])
     if st.button("Assess"):
-        if c > 240 or s=="Yes":
-            st.error("High heart risk")
-        else:
-            st.success("Healthy heart condition")
+        if c>240 or s=="Yes": st.error("High heart risk")
+        else: st.success("Healthy heart condition")
 
 # ================= TRENDS =================
-elif menu == "📈 Trends":
+elif menu=="📈 Trends":
     st.markdown("<div class='bigtitle'>Trends & Analytics</div>", unsafe_allow_html=True)
-    df = pd.DataFrame({
-        "Date": pd.date_range(end=datetime.today(), periods=10),
-        "BMI": [24, 24.2, 24.3, 24.5, 24.6, 24.8, 25, 24.9, 24.7, 24.6]
-    })
-    fig = px.line(df, x="Date", y="BMI", markers=True)
-    st.plotly_chart(fig, use_container_width=True)
+    df = pd.DataFrame({"Date":pd.date_range(end=datetime.today(),periods=10),
+                       "BMI":[24,24.2,24.3,24.5,24.6,24.8,25,24.9,24.7,24.6]})
+    fig = px.line(df,x="Date",y="BMI",markers=True)
+    st.plotly_chart(fig,use_container_width=True)
 
 # ================= AI DOCTOR =================
-elif menu == "🤖 AI Doctor":
+elif menu=="🤖 AI Doctor":
     st.markdown("<div class='bigtitle'>AI Health Assistant</div>", unsafe_allow_html=True)
     user_input = st.text_area("Describe your symptoms or ask anything:")
     if st.button("Ask AI"):
@@ -177,12 +153,12 @@ elif menu == "🤖 AI Doctor":
             st.write(result)
 
 # ================= VOICE ASSISTANT =================
-elif menu == "🎤 Voice Assistant":
+elif menu=="🎤 Voice Assistant":
     st.markdown("<div class='bigtitle'>Voice Assistant</div>", unsafe_allow_html=True)
     st.write("Voice input/output engine will activate once TTS/STT API is connected.")
 
 # ================= SETTINGS =================
-elif menu == "⚙️ Settings":
+elif menu=="⚙️ Settings":
     st.markdown("<div class='bigtitle'>Settings</div>", unsafe_allow_html=True)
     st.write("### Theme")
     st.button("Toggle Light/Dark", on_click=toggle_theme)
