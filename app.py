@@ -1,5 +1,4 @@
-import os
-from openai import OpenAI
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -8,7 +7,12 @@ import time
 
 # ================= SAFE AI SETUP =================
 # Reads API key from environment variable
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+import streamlit as st
+from openai import OpenAI
+
+# Streamlit secrets
+client = OpenAI(api_key=st.secrets["openai"]["api_key"])
+
 
 def ai_doctor(prompt):
     try:
