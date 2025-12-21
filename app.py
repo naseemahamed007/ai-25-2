@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -6,24 +5,27 @@ from datetime import datetime
 import time
 
 # ================= SAFE AI SETUP =================
-# Reads API key from environment variable
-import streamlit as st
-from openai import OpenAI
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
 
-client = OpenAI(api_key=st.secrets["openai"]["api_key"])
+# Load Hugging Face free model (Bloom small)
+model_name = "bigscience/bloom-560m"
+token = st.secrets["huggingface"]["api_key"]  # Make sure you set this in Streamlit secrets
 
+@st.cache_resource
+def load_model():
+    tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=token)
+    model = AutoModelForCausalLM.from_pretrained(model_name, use_auth_token=token)
+    return tokenizer, model
 
+tokenizer, model = load_model()
 
 def ai_doctor(prompt):
     try:
-        response = client.chat.completions.create(
-            model="gpt-4.1-mini",
-            messages=[
-                {"role": "system", "content": "You are a friendly medical assistant. Give safe health guidance."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-        return response.choices[0].message["content"]
+        inputs = tokenizer(prompt, return_tensors="pt")
+        outputs = model.generate(**inputs, max_new_tokens=150)
+        answer = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        return answer
     except Exception as e:
         return f"⚠️ Error: {str(e)}"
 
