@@ -8,7 +8,7 @@ import time
 
 # ================= SAFE AI SETUP =================
 # Reads API key from environment variable
-client = OpenAI(api_key=os.getenv(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))
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def ai_doctor(prompt):
     try:
