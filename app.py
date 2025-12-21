@@ -8,9 +8,9 @@ import time
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 
-# Load Hugging Face free model (Bloom small)
+# ---- Hugging Face Model ----
 model_name = "bigscience/bloom-560m"
-token = st.secrets["huggingface"]["api_key"]  # Make sure you set this in Streamlit secrets
+token = st.secrets["huggingface"]["api_key"]  # Add your HF API key in Streamlit secrets
 
 @st.cache_resource
 def load_model():
