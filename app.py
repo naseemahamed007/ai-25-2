@@ -1,3 +1,7 @@
+import os
+from openai import OpenAI
+
+client = OpenAI(api_key=os.getenv(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))
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -200,6 +204,19 @@ elif choice == "📈 Trends":
     df = pd.DataFrame({
         "Date": pd.date_range(end=datetime.today(), periods=10),
         "BMI": [24, 24.2, 24.3, 24.5, 24.6, 24.8, 25, 24.9, 24.7, 24.6]
+        def ai_doctor(prompt):
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4.1-mini",
+            messages=[
+                {"role": "system", "content": "You are a friendly medical assistant. Give safe health guidance."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        return response.choices[0].message["content"]
+    except Exception as e:
+        return f"⚠️ Error: {str(e)}"
+
     })
 
     fig = px.line(df, x="Date", y="BMI", markers=True)
