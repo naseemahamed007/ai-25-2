@@ -6,7 +6,7 @@ from fpdf import FPDF
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
-    page_title="Global Medical Assistant",
+    page_title="Naseem Medical Assistant",
     page_icon="🩺",
     layout="wide"
 )
